@@ -24,11 +24,13 @@ namespace WebAPI.Hubs
         {
         public string UserId { get; set; }
         public string ConnectionId { get; set; }
-        public string FullName { get; set; }
-        public string Username { get; set; }
+            public string FullName { get; set; }
+            public string FirstName { get; set; }
+            public string LastName { get; set; }
+            public string Username { get; set; }
         }
 
-    public void SendToAll(string message)
+        public void SendToAll(string message)
         {
             Clients.All.SendAsync("broadcast", message);
         }
@@ -47,10 +49,11 @@ namespace WebAPI.Hubs
         {
             _db.Messages.Add(new Message{UserId=connectionId,MassageDesction=message,Time=DateTime.UtcNow });
             _db.SaveChanges();
-            return Clients.Client(connectionId).SendAsync("ReceiveDM", Context.ConnectionId, message);
+            return Clients.Clients(new List<string> { connectionId, Context.ConnectionId }).SendAsync("ReceiveDM", Context.ConnectionId, message);
+  
         }
 
-        public async Task OnConnect(string id,string fullname,string username)
+        public async Task OnConnect(string id,string firstName, string lastName,string username)
         {
 
             var existingUser = Users.FirstOrDefault(x => x.Username == username);
@@ -60,7 +63,9 @@ namespace WebAPI.Hubs
             {
                 UserId = id,
                 ConnectionId = Context.ConnectionId,
-                FullName = fullname,
+                FirstName = firstName,
+                LastName = lastName,
+                FullName = firstName,
                 Username = username
             };
 

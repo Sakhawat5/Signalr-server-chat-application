@@ -212,10 +212,16 @@ namespace WebAPI.Migrations
                 {
                     b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
 
+                    b.Property<string>("FirstName")
+                        .HasColumnType("nvarchar(50)");
+
                     b.Property<string>("FullName")
                         .HasColumnType("nvarchar(150)");
 
                     b.Property<bool>("IsOnline");
+
+                    b.Property<string>("LastName")
+                        .HasColumnType("nvarchar(50)");
 
                     b.HasDiscriminator().HasValue("ApplicationUser");
                 });

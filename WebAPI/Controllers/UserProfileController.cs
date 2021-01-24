@@ -28,6 +28,8 @@ namespace WebAPI.Controllers
             var user = await _userManager.FindByIdAsync(userId);
             return Ok(new
             {
+                 user.FirstName,
+                 user.LastName,
                  user.FullName,
                  user.Email,
                  user.UserName

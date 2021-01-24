@@ -40,10 +40,14 @@ namespace WebAPI.Controllers
         public async Task<Object> PostApplicationUser(UserModel model)
         {
             model.Role = "Admin";
+            model.Password = "Asdf123@";
             var applicationUser = new ApplicationUser() {
-                UserName = model.UserName,
+                UserName = model.Email,
                 Email = model.Email,
-                FullName = model.FullName
+                FirstName = model.FirstName,
+                LastName = model.LastName,
+                FullName = model.FirstName
+
             };
 
             try
@@ -68,6 +72,7 @@ namespace WebAPI.Controllers
         //POST : /api/ApplicationUser/Login
         public async Task<IActionResult> Login(LoginModel model)
         {
+            model.Password = "Asdf123@";
             var user = await _userManager.FindByNameAsync(model.UserName);
             if (user != null && await _userManager.CheckPasswordAsync(user, model.Password))
             {
@@ -81,7 +86,8 @@ namespace WebAPI.Controllers
                     {
                         new Claim("UserID",user.Id.ToString()),
                         new Claim("UserName",user.UserName),
-                        new Claim("FullName",user.FullName),
+                        new Claim("FirstName", user.FirstName),
+                        new Claim("LastName", user.LastName),
                         new Claim(_options.ClaimsIdentity.RoleClaimType,role.FirstOrDefault())
                     }),
                     Expires = DateTime.UtcNow.AddDays(1),
@@ -94,7 +100,7 @@ namespace WebAPI.Controllers
                 //Add User to Online Users 
                 user.IsOnline = true;
 
-                return Ok(new { token,user.Id, user.UserName });
+                return Ok(new { token,user.Id, user.Email });
             }
             else
                 return BadRequest(new { message = "Username or password is incorrect." });

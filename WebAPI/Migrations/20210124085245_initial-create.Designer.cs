@@ -10,14 +10,14 @@ using WebAPI.Models;
 namespace WebAPI.Migrations
 {
     [DbContext(typeof(AuthenticationContext))]
-    [Migration("20190726082227_tchatt1")]
-    partial class tchatt1
+    [Migration("20210124085245_initial-create")]
+    partial class initialcreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.2.6-servicing-10079")
+                .HasAnnotation("ProductVersion", "2.2.0-rtm-35687")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -191,33 +191,39 @@ namespace WebAPI.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("WebAPI.Models.Chat.UserConnection", b =>
+            modelBuilder.Entity("WebAPI.Models.Message", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("ApplicationUserId");
+                    b.Property<string>("FromId");
 
-                    b.Property<string>("ConnectionId");
+                    b.Property<string>("MassageDesction");
 
-                    b.Property<int>("UserId");
+                    b.Property<DateTime>("Time");
+
+                    b.Property<string>("UserId");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ApplicationUserId");
-
-                    b.ToTable("UserConnections");
+                    b.ToTable("Messages");
                 });
 
             modelBuilder.Entity("WebAPI.Models.ApplicationUser", b =>
                 {
                     b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
 
+                    b.Property<string>("FirstName")
+                        .HasColumnType("nvarchar(50)");
+
                     b.Property<string>("FullName")
                         .HasColumnType("nvarchar(150)");
 
                     b.Property<bool>("IsOnline");
+
+                    b.Property<string>("LastName")
+                        .HasColumnType("nvarchar(50)");
 
                     b.HasDiscriminator().HasValue("ApplicationUser");
                 });
@@ -264,14 +270,6 @@ namespace WebAPI.Migrations
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser")
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("WebAPI.Models.Chat.UserConnection", b =>
-                {
-                    b.HasOne("WebAPI.Models.ApplicationUser", "ApplicationUser")
-                        .WithMany("UserConnections")
-                        .HasForeignKey("ApplicationUserId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618
